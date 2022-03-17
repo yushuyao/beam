@@ -25,6 +25,7 @@ import static org.apache.beam.vendor.guava.v26_0_jre.com.google.common.base.Prec
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadResult;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
@@ -474,6 +475,8 @@ class S3FileSystem extends FileSystem<S3ResourceId> {
     copyObjectRequest.setStorageClass(config.getS3StorageClass());
     copyObjectRequest.setSourceSSECustomerKey(config.getSSECustomerKey());
     copyObjectRequest.setDestinationSSECustomerKey(config.getSSECustomerKey());
+    copyObjectRequest.setDestinationSSECustomerKey(config.getSSECustomerKey());
+    copyObjectRequest.withCannedAccessControlList(CannedAccessControlList.BucketOwnerFullControl);
     return amazonS3.get().copyObject(copyObjectRequest);
   }
 
@@ -484,6 +487,7 @@ class S3FileSystem extends FileSystem<S3ResourceId> {
     InitiateMultipartUploadRequest initiateUploadRequest =
         new InitiateMultipartUploadRequest(destinationPath.getBucket(), destinationPath.getKey())
             .withStorageClass(config.getS3StorageClass())
+            .withCannedACL(CannedAccessControlList.BucketOwnerFullControl)
             .withObjectMetadata(sourceObjectMetadata);
     initiateUploadRequest.setSSECustomerKey(config.getSSECustomerKey());
 

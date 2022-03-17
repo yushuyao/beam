@@ -22,6 +22,7 @@ import static org.apache.beam.vendor.guava.v26_0_jre.com.google.common.base.Prec
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
@@ -93,6 +94,7 @@ class S3WritableByteChannel implements WritableByteChannel {
     request.setSSECustomerKey(config.getSSECustomerKey());
     request.setSSEAwsKeyManagementParams(config.getSSEAwsKeyManagementParams());
     request.setBucketKeyEnabled(config.getBucketKeyEnabled());
+    request.withCannedACL(CannedAccessControlList.BucketOwnerFullControl);
     InitiateMultipartUploadResult result;
     try {
       result = amazonS3.initiateMultipartUpload(request);
